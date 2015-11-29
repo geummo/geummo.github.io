@@ -1,0 +1,12 @@
+= Getting Google Brillo source codes
+
+----
+$ repo init -u https://android.googlesource.com/brillo/manifest -b master
+----
+
+Reference:
+
+http://www.cnx-software.com/2015/11/23/how-to-build-and-run-brillo-operating-system-from-source-code/
+http://qiita.com/hidenorly/items/3802e41de9bc101b4dd5
+
+:ht-tags:
