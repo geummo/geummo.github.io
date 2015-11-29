@@ -4,6 +4,7 @@ You can download the latest Google Brillo source codes using the following comma
 
 ----
 $ repo init -u https://android.googlesource.com/brillo/manifest -b master
+$ repo sync -j8
 ----
 
 
