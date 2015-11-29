@@ -1,6 +1,7 @@
 = Getting Google Brillo source codes
 
-You can download the latest Google Brillo source codes using the following co
+You can download the latest Google Brillo source codes using the following command:
+
 ----
 $ repo init -u https://android.googlesource.com/brillo/manifest -b master
 ----
