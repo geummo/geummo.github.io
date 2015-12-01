@@ -1,0 +1,170 @@
+= How to flash a target board using a function "provision" on Brillo
+
+Unlike Android, Brillo introduces a new function "provision", which flashes all required images into the target board.
+
+Just type hmm and then you can see the function in the list:
+
+----
+marvell@marvell-ThinkPad-X230:android1101$ hmm
+Invoke ". build/envsetup.sh" from your shell to add the following functions to your environment:
+- lunch:     lunch <product_name>-<build_variant>
+- tapas:     tapas [<App1> <App2> ...] [arm|x86|mips|armv5|arm64|x86_64|mips64] [eng|userdebug|user]
+- croot:     Changes directory to the top of the tree.
+- m:         Makes from the top of the tree.
+- mm:        Builds all of the modules in the current directory, but not their dependencies.
+- mmm:       Builds all of the modules in the supplied directories, but not their dependencies.
+             To limit the modules being built use the syntax: mmm dir/:target1,target2.
+- mma:       Builds all of the modules in the current directory, and their dependencies.
+- mmma:      Builds all of the modules in the supplied directories, and their dependencies.
+- provision: Flash device with all required partitions. Options will be passed on to fastboot.
+- cgrep:     Greps on all local C/C++ files.
+- ggrep:     Greps on all local Gradle files.
+- jgrep:     Greps on all local Java files.
+- resgrep:   Greps on all local res/*.xml files.
+- mangrep:   Greps on all local AndroidManifest.xml files.
+- mgrep:     Greps on all local Makefiles files.
+- sepgrep:   Greps on all local sepolicy files.
+- sgrep:     Greps on all local source files.
+- godir:     Go to the directory containing a file.
+
+Environment options:
+- SANITIZE_HOST: Set to 'true' to use ASAN for all host modules. Note that
+                 ASAN_OPTIONS=detect_leaks=0 will be set by default until the
+                 build is leak-check clean.
+
+Look at the source to view more functions. The complete list is:
+addcompletions add_lunch_combo cgrep check_product check_variant choosecombo chooseproduct choosetype choosevariant core coredump_enable coredump_setup cproj croot findmakefile get_abs_build_var getbugreports get_build_var getdriver getlastscreenshot get_make_command getprebuilt getscreenshotpath getsdcardpath gettargetarch gettop ggrep godir hmm is isviewserverstarted jgrep key_back key_home key_menu lunch _lunch m make mangrep mgrep mm mma mmm mmma pez pid printconfig print_lunch_menu provision qpid rcgrep resgrep runhat runtest sepgrep set_java_home setpaths set_sequence_number set_stuff_for_environment settitle sgrep smoketest stacks startviewserver stopviewserver systemstack tapas tracedmdump treegrep
+marvell@marvell-ThinkPad-X230:android1101$ 
+----
+
+For example, if you want flash Marvell Andromeda Box Edge, just type the following procedures:
+
+1. 
+----
+marvell@marvell-ThinkPad-X230:android1101$ . build/envsetup.sh 
+including device/generic/brillo/vendorsetup.sh
+including device/generic/brillo/brilloemulator_arm64/base_product/devicesetup.sh
+including device/generic/brillo/brilloemulator_arm/base_product/devicesetup.sh
+including device/generic/brillo/brilloemulator_x86_64/base_product/devicesetup.sh
+including device/generic/brillo/brilloemulator_x86/base_product/devicesetup.sh
+including device/marvell/andromeda_edge/base_product/devicesetup.sh
+including device/qcom/dragonboard/base_product/devicesetup.sh
+including device/generic/mini-emulator-arm64/vendorsetup.sh
+including device/generic/mini-emulator-armv7-a-neon/vendorsetup.sh
+including device/generic/mini-emulator-x86_64/vendorsetup.sh
+including device/generic/mini-emulator-x86/vendorsetup.sh
+including product/google/common/brillo_gpios/vendorsetup.sh
+including product/google/common/brillo_leds/vendorsetup.sh
+including product/google/example-ledflasher/vendorsetup.sh
+----
+
+2. choose the combo "andromeda_edge-eng"
+----
+marvell@marvell-ThinkPad-X230:android1101$ lunch andromeda_edge-eng
+
+============================================
+PLATFORM_VERSION_CODENAME=REL
+PLATFORM_VERSION=6.0
+TARGET_PRODUCT=andromeda_edge
+TARGET_BUILD_VARIANT=eng
+TARGET_BUILD_TYPE=release
+TARGET_BUILD_APPS=
+TARGET_ARCH=arm
+TARGET_ARCH_VARIANT=armv7-a-neon
+TARGET_CPU_VARIANT=cortex-a53
+TARGET_2ND_ARCH=
+TARGET_2ND_ARCH_VARIANT=
+TARGET_2ND_CPU_VARIANT=
+HOST_ARCH=x86_64
+HOST_OS=linux
+HOST_OS_EXTRA=Linux-3.13.0-68-generic-x86_64-with-Ubuntu-14.04-trusty
+HOST_CROSS_OS=windows
+HOST_BUILD_TYPE=release
+BUILD_ID=MASTER
+OUT_DIR=out
+============================================
+----
+
+3. 
+----
+marvell@marvell-ThinkPad-X230:android1101$ provision
+This action will reflash your device.
+
+ALL DATA ON THE DEVICE WILL BE IRREVOCABLY ERASED.
+
+Are you sure you want to do this (yes/no)? yes
++ KERNEL_LOAD=0x00808000
++ KERNEL_IMAGE=uImage
++ KERNEL_OUT=/home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/obj/KERNEL_OBJ
++ dtb_files=/home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/obj/KERNEL_OBJ/arch/arm/boot/dts/pxa1908-dkb.dtb
++ local_dtb_files_padded=/home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/obj/KERNEL_OBJ/arch/arm/boot/dts/pxa1908-dkb.dtb.padded
++ DTB_PADDING_BOOTIMG_SIZE=131072
++ TARGET_DEVICE=andromeda_edge
++ TARGET_KERNEL_ARCH=arm
++ KERNEL_BIN=/home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/obj/KERNEL_OBJ/arch/arm/boot/zImage-dtb
++ echo Proceeding the dtb files: +/home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/obj/KERNEL_OBJ/arch/arm/boot/dts/pxa1908-dkb.dtb
+Proceeding the dtb files: +/home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/obj/KERNEL_OBJ/arch/arm/boot/dts/pxa1908-dkb.dtb
++ cp /home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/obj/KERNEL_OBJ/arch/arm/boot/dts/pxa1908-dkb.dtb /home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/obj/KERNEL_OBJ/arch/arm/boot/dts/pxa1908-dkb.dtb.orig
++ cat /home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/obj/KERNEL_OBJ/arch/arm/boot/dts/pxa1908-dkb.dtb.orig /dev/zero
++ head -c 131072
++ echo Patching the out dtb files: +/home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/obj/KERNEL_OBJ/arch/arm/boot/dts/pxa1908-dkb.dtb.padded+ to the kernel image
+Patching the out dtb files: +/home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/obj/KERNEL_OBJ/arch/arm/boot/dts/pxa1908-dkb.dtb.padded+ to the kernel image
++ /home/marvell/dev/marvell/iap140_brillo/src/android1101/vendor/bsp/marvell/device/andromeda/kernel/mkimage -A arm -O linux -C gzip -a 0x00808000 -e 0x00808000 -n andromeda_edge linux -d /home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/obj/KERNEL_OBJ/arch/arm/boot/compressed/piggy.gzip /home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/obj/KERNEL_OBJ/arch/arm/boot/uImage
+Image Name:   andromeda_edge linux
+Created:      Tue Dec  1 21:52:51 2015
+Image Type:   ARM Linux Kernel Image (gzip compressed)
+Data Size:    6367616 Bytes = 6218.38 kB = 6.07 MB
+Load Address: 00808000
+Entry Point:  00808000
++ cat /home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/obj/KERNEL_OBJ/arch/arm/boot/uImage /dev/zero
++ ls -l /home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/obj/KERNEL_OBJ/arch/arm/boot/uImage
++ awk -F  {print $5}
++ ls -l+  /home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/obj/KERNEL_OBJ/arch/arm/boot/uImage
+awk -F  {print $5}
++ expr 6367680 + 2048 - 6367680 % 2048
++ head -c 6369280
++ cat /home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/obj/KERNEL_OBJ/arch/arm/boot/uImage.padded /home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/obj/KERNEL_OBJ/arch/arm/boot/dts/pxa1908-dkb.dtb.padded
++ /home/marvell/dev/marvell/iap140_brillo/src/android1101/out/host/linux-x86/bin/acp -fp /home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/obj/KERNEL_OBJ/arch/arm/boot/zImage-dtb /home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/kernel
++ /home/marvell/dev/marvell/iap140_brillo/src/android1101/out/host/linux-x86/bin/mkbootimg --kernel /home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/kernel --ramdisk /home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/ramdisk.img --cmdline androidboot.console=ttyS1 console=ttyS1,115200 panic_debug uart_dma crashkernel=4k@0x8140000 user_debug=31 earlyprintk=uart8250-32bit,0xd4017000 androidboot.lcd=720p cma=20M cgroup_disable=memory ddr_mode=2 RDCA=08140400 cpmem=32M@0x06000000 androidboot.exist.cp=18 androidboot.hardware=iap140 --output /home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/boot.img
++ /home/marvell/dev/marvell/iap140_brillo/src/android1101/vendor/bsp/marvell/device/andromeda/bin/make_ext4fs -s -T -1 -S /home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/root/file_contexts.bin -L system -l 1073741824 -a system /home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/obj/PACKAGING/systemimage_intermediates/system.img /home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/system /home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/system
+Creating filesystem with parameters:
+    Size: 1073741824
+    Block size: 4096
+    Blocks per group: 32768
+    Inodes per group: 8192
+    Inode size: 256
+    Journal blocks: 4096
+    Label: system
+    Blocks: 262144
+    Block groups: 8
+    Reserved block group size: 63
+Created filesystem with 673/65536 inodes and 26045/262144 blocks
++ /home/marvell/dev/marvell/iap140_brillo/src/android1101/vendor/bsp/marvell/device/andromeda/bin/make_ext4fs -s -T -1 -L userdata -l 4343595008 -a userdata /home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/userdata.img
+Creating filesystem with parameters:
+    Size: 4343595008
+    Block size: 4096
+    Blocks per group: 32768
+    Inodes per group: 8048
+    Inode size: 256
+    Journal blocks: 16569
+    Label: userdata
+    Blocks: 1060448
+    Block groups: 33
+    Reserved block group size: 263
+Created filesystem with 11/265584 inodes and 35357/1060448 blocks
++ /home/marvell/dev/marvell/iap140_brillo/src/android1101/vendor/bsp/marvell/device/andromeda/bin/make_ext4fs -s -T -1 -L cache -l 268435456 -a cache /home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/cache.img
+Creating filesystem with parameters:
+    Size: 268435456
+    Block size: 4096
+    Blocks per group: 32768
+    Inodes per group: 8192
+    Inode size: 256
+    Journal blocks: 1024
+    Label: cache
+    Blocks: 65536
+    Block groups: 2
+    Reserved block group size: 15
+Created filesystem with 11/16384 inodes and 2089/65536 blocks
++ /home/marvell/dev/marvell/iap140_brillo/src/android1101/out/host/linux-x86/bin/acp -fp /home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/obj/PACKAGING/systemimage_intermediates/system.img /home/marvell/dev/marvell/iap140_brillo/src/android1101/out/target/product/andromeda_edge/system.img
+< waiting for any device >
+----
